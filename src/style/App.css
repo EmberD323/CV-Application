@@ -7,10 +7,42 @@
 }
 .container{
   display:flex;
-  place-items: center;
+  flex-wrap: wrap;
+  align-items: flex-start;
+
 }
 .container>*{
   border:1px solid grey;
-  padding:25px
+  padding:25px;
+
+
+}
+.heading{
+  text-align: left;
+}
+.cvContainer{
+  width:500px;
+}
+
+.open,form{
+  display: flex;
+  flex-direction: column;
+  align-items: baseline;
+  gap:10px;
+  margin: 5px 0 0 0;
+
+}
+
+form>div{
+  display: flex;
+  gap:15px;
+}
+.closed{
+  display: none;
+}
+ul {
+  list-style-type: none;
+  margin:0;
+  padding: 0;
 }
 

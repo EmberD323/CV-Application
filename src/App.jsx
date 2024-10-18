@@ -1,12 +1,27 @@
 import { useState } from 'react'
 import './style/App.css'
-import {PersonalForm,PersonalDisplay} from './components/Personal.jsx'
+import { EducationDisplay, EducationForm} from './components/Education.jsx'
+import { PersonalForm } from './components/Personal.jsx';
+import { ExperienceDisplay, ExperienceForm} from './components/Experience.jsx';
 
 
 function App() {
-  const[name,setName] = useState("Ember Doyle");
-  const[email,setEmail] = useState("doyle.ember@gmail.com");
-  const[phone,setPhone] = useState("08525779");
+  const[name,setName] = useState("");
+  const[email,setEmail] = useState("");
+  const[phone,setPhone] = useState("");
+  const[personalSubmit,setPersonalSubmit] = useState(false);
+  const[educationRevealed,setEducationReveal] = useState(false);
+  const[experienceRevealed,setExperienceReveal] = useState(false);
+  let experienceArray=[
+    {   id:crypto.randomUUID(),
+        company:"",
+        role:"",
+        responsibilities:"",
+        
+    }];
+  const[experience,setExperience] = useState(experienceArray)
+
+
   function handleNameChange(e){
     setName(e.target.value);
   } 
@@ -16,7 +31,49 @@ function App() {
   function handlePhoneChange(e){
     setPhone(e.target.value);
   } 
-
+  function handlePersonalChange(){
+    setPersonalSubmit(!personalSubmit);
+  }
+  function handleEducationReveal(){
+    setEducationReveal(!educationRevealed);
+  }
+  function handleExperienceReveal(){
+    setExperienceReveal(!experienceRevealed);
+  }
+  function handleNewForm(){
+    let newRole =
+        {   id:crypto.randomUUID(),
+            company: "",
+            role:"",
+            responsibilities:"",
+        }
+    
+    let experienceCopy =[...experience] ;
+    experienceCopy.push(newRole);
+    setExperience(experienceCopy);
+    
+    
+}
+function handleExperienceSubmit(e){
+  let FormDOM = e.target.parentNode.childNodes
+  console.log(FormDOM[0])
+  let NewId = e.target.parentNode.id;
+  let NewCompany = FormDOM[0].childNodes[1].value;
+  let NewRole = FormDOM[1].childNodes[1].value;
+  let NewResponsibilities = FormDOM[2].childNodes[1].value;
+  //filter experience array by 
+  for(let i=0;i<experience.length;i++){
+      if(experience[i].id == NewId){
+          experience[i].company = NewCompany;
+          experience[i].role = NewRole;
+          experience[i].responsibilities = NewResponsibilities;
+      }
+  }
+  console.log(experience)
+  let experienceCopy =[...experience]
+  setExperience(experienceCopy);
+}
+ 
   return (
     <>
     <h1>CV Generator</h1>
@@ -24,29 +81,26 @@ function App() {
       <div className ="formContainer">
         <div className='personal'>
               <h3 className="heading">Personal Information</h3>
-              <form onSubmit={e => e.preventDefault()}>
-                  <div className="name">
-                      <label htmlFor="name">Name</label>
-                      <br></br>
-                      <input type="text" id="name" placeholder="Name" value={name} onChange={handleNameChange}/>
-                  </div>
-                  <div className="email">
-                      <label htmlFor="email">E-mail</label>
-                      <br></br>
-                      <input type="email" id="email"placeholder="E-mail@email.com" value={email} onChange={handleEmailChange}/>
-                  </div>
-                  <div className="phone">
-                      <label htmlFor="phone">Phone Number</label>
-                      <br></br>
-                      <input type="number" id="phone"placeholder="000-0000000" value={phone} onChange={handlePhoneChange}/>
-                  </div>
-              </form>
+              <PersonalForm myClassName={personalSubmit===false ? "open":"closed"} name={name} handleNameChange = {handleNameChange}
+              email = {email} handleEmailChange = {handleEmailChange} phone = {phone} handlePhoneChange= {handlePhoneChange}/>
+              <button onClick={handlePersonalChange}>{personalSubmit===false ? "Submit":"Edit"}</button>
         </div>
         <div className="education">
           <h3 className="heading">Education</h3>
+          <button onClick={handleEducationReveal}>{educationRevealed===false ? "Edit":"Close"}</button>
+          <EducationForm myClassName ={educationRevealed===true ? "open":"closed"} handleEducationReveal={handleEducationReveal}/>
+          
+            
+            
+            
         </div>
         <div className="experience">
           <h3 className="heading">Experience</h3>
+          <button onClick={handleExperienceReveal}>{experienceRevealed===false ? "Edit":"Close"}</button>
+          <div className ={experienceRevealed===true ? "open":"closed"} id="form container">
+            
+            <ExperienceForm experience={experience} handleNewForm={handleNewForm} handleExperienceSubmit={handleExperienceSubmit}/>
+          </div>
         </div>
       </div>
       <div className ="cvContainer">
@@ -59,9 +113,14 @@ function App() {
         </div>
         <div className="education">
           <h3 className="heading">Education</h3>
+          <EducationDisplay />
+
         </div>
         <div className="experience">
           <h3 className="heading">Experience</h3>
+          <ExperienceDisplay experienceArray={experience} ></ExperienceDisplay>
+          
+          
         </div>
       </div>
     </div>
